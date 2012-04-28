@@ -182,7 +182,7 @@ function runTests() {
 	});
 
 	module("searching in a quadtree");
-	
+		
 	test("searching in 2 level quad tree", function() {
 		var qt = new ajuc.jsPointQuadtree.Quadtree([0,0,3,3]);
 		
@@ -203,7 +203,7 @@ function runTests() {
 	
 	module("joining points into nodes");
 	
-	test("joining 4 points in a 16-point (2 level) quad tree - should join into 1 first level node", function() {
+	test("joining", function() {
 		var qt = new ajuc.jsPointQuadtree.Quadtree([0,0,3,3]);
 		qt.add([2,2], 997);
 		qt.add([2,3], 997);
@@ -290,7 +290,72 @@ function runTests() {
 		deepEqual(qt.root.kids[3].coordinates, [2, 2, 3, 3]);
 		deepEqual(qt.root.kids[3].kids, [undefined, undefined, undefined, undefined]);
 		deepEqual(qt.root.kids[3].value, 997);
+		
+		
+		for (var i=0; i<4; i++) {
+			for (var j=0; j<4; j++) {
+				qt.add([i,j], 998);
+			}
+		}
+		qt.rejoin();
+		
+		deepEqual(qt.root.kids, [undefined, undefined, undefined, undefined]);
+		deepEqual(qt.root.value, 998);
 	});
+
+	test("auto joining", function() {
+		var qt = new ajuc.jsPointQuadtree.Quadtree([0,0,3,3], {'joinSameValues': true});
+		qt.add([2,2], 997);
+		qt.add([2,3], 997);
+		qt.add([3,2], 997);
+		qt.add([3,3], 998);
+
+
+		deepEqual(qt.root.kids[3].kids[0].coordinates, [2,2,2,2]);
+		deepEqual(qt.root.kids[3].kids[0].kids, [undefined, undefined, undefined, undefined]);
+		deepEqual(qt.root.kids[3].kids[0].value, 997);
+		deepEqual(qt.root.kids[3].kids[1].coordinates, [3,2,3,2]);
+		deepEqual(qt.root.kids[3].kids[1].kids, [undefined, undefined, undefined, undefined]);
+		deepEqual(qt.root.kids[3].kids[1].value, 997);
+		deepEqual(qt.root.kids[3].kids[2].coordinates, [2,3,2,3]);
+		deepEqual(qt.root.kids[3].kids[2].kids, [undefined, undefined, undefined, undefined]);
+		deepEqual(qt.root.kids[3].kids[2].value, 997);
+		deepEqual(qt.root.kids[3].kids[3].coordinates, [3,3,3,3]);
+		deepEqual(qt.root.kids[3].kids[3].kids, [undefined, undefined, undefined, undefined]);
+		deepEqual(qt.root.kids[3].kids[3].value, 998);
+		
+		qt.add([3,3], 997);
+
+		deepEqual(qt.coordinates, [0, 0, 3, 3]);
+		deepEqual(qt.root.coordinates, [0, 0, 3, 3]);
+		
+		deepEqual(qt.root.kids[0].coordinates, [0, 0, 1, 1]);
+		deepEqual(qt.root.kids[0].kids, [undefined, undefined, undefined, undefined]);
+		deepEqual(qt.root.kids[0].value, undefined);
+		
+		deepEqual(qt.root.kids[1].coordinates, [2, 0, 3, 1]);
+		deepEqual(qt.root.kids[1].kids, [undefined, undefined, undefined, undefined]);
+		deepEqual(qt.root.kids[1].value, undefined);
+		
+		deepEqual(qt.root.kids[2].coordinates, [0, 2, 1, 3]);
+		deepEqual(qt.root.kids[2].kids, [undefined, undefined, undefined, undefined]);
+		deepEqual(qt.root.kids[2].value, undefined);
+		
+		deepEqual(qt.root.kids[3].coordinates, [2, 2, 3, 3]);
+		deepEqual(qt.root.kids[3].kids, [undefined, undefined, undefined, undefined]);
+		deepEqual(qt.root.kids[3].value, 997);
+		
+		
+		for (var i=0; i<4; i++) {
+			for (var j=0; j<4; j++) {
+				qt.add([i,j], 998);
+			}
+		}
+		
+		deepEqual(qt.root.kids, [undefined, undefined, undefined, undefined]);
+		deepEqual(qt.root.value, 998);
+	});
+
 	
 <!-- TODO -->
 	

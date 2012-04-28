@@ -22,8 +22,8 @@ data more efficiently, than regular 2d grid, if there are many regions with equa
 (in the sense of === operator, or (in the future), in the sense of anonymous boolean function,
 supplied by the user of the library to the constructor of the quadtree).
 
-Work in progress (recursively joining same elements into one node doesn't work yet).
+Compression is efficient for sparse grids, or grids with big regions of the same values.
 
-Library has no dependnencies.
+Work in progress.
 
-Unit tests are (surprisignly) in test.html , and use jquery and qunit, just to test the library .
+Unit tests are (surprisignly) in tests.html , and use jquery and qunit, just to test the library. Library has no dependnencies.
