@@ -1,0 +1,29 @@
+Javascript Point Quadtree (jsPointQuadtree).
+(c) 2012 Sebastian "Ajuć" Pidek
+login on gmail: ajuc00
+
+Distributed under MIT licence
+Downloaded from https://github.com/ajuc/jsPointQuadtree
+
+//TODO - add licence
+
+
+This is simple implementation of quadtree of points.
+
+Useful for compressing tiled maps, raster images, etc.
+Useless for keeping objects (lke enemies, buildings, players),  in it.
+Also useless for space indexing.
+
+Assumptions: we have square grid,
+width == height == power of 2.
+
+At each point in this grid we can have some value. This quad tree can keep such
+data more efficiently, than regular 2d grid, if there are many regions with equal values
+(in the sense of === operator, or (in the future), in the sense of anonymous boolean function,
+supplied by the user of the library to the constructor of the quadtree).
+
+Work in progress (recursively joining same elements into one node doesn't work yet).
+
+Library has no dependnencies.
+
+Unit tests are (surprisignly) in test.html , and use jquery and qunit, just to test the library .
