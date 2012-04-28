@@ -136,6 +136,35 @@ ajuc.jsPointQuadtree = (function() {
 		};
 	};
 	
+	Node.prototype.rejoin = function() {
+		if (!this.isLeaf()) {
+			// descent
+			var values = [ this.kids[0].rejoin(),
+			               this.kids[1].rejoin(),
+			               this.kids[2].rejoin(),
+			               this.kids[3].rejoin() ];
+			
+			//check
+			if ( values[0][0] &&
+				 values[1][0] &&
+				 values[2][0] &&
+				 values[3][0] &&
+				 values[0][1] === values[1][1] &&
+				 values[1][1] === values[2][1] &&
+				 values[2][1] === values[3][1]
+			) {
+				// join
+				this.kids = [undefined, undefined, undefined, undefined];
+				this.value = values[0][1];
+				return [true, this.value];  // [same values in kids, value]
+			} else {
+				return [false, this.value]; // [same values in kids, value]
+			}
+		} else {
+			return [true, this.value]; // [same values in kids, value]
+		}
+	};
+	
 	function Quadtree(coordinates, options) {
 		this.coordinates = coordinates;
 		if (options===undefined) {
@@ -159,8 +188,7 @@ ajuc.jsPointQuadtree = (function() {
 	};
 
 	Quadtree.prototype.rejoin = function() {
-		//TODO
-		;
+		this.root.rejoin();
 	};
 
 	
