@@ -1,4 +1,4 @@
-if (typeof(ajuc) != undefined) {
+if (typeof(ajuc) != null) {
 	ajuc = {};
 }
 
@@ -94,7 +94,7 @@ ajuc.jsPointQuadtree = (function() {
 	};
 	
 	Node.prototype.isLeaf = function () {
-		return this.kids[0] === undefined;
+		return this.kids[0] === null;
 	};
 	
 	Node.prototype.valueAt = function (point) {
@@ -103,7 +103,7 @@ ajuc.jsPointQuadtree = (function() {
 		} else {
 			var kidNo = whichSubQuad(this.coordinates, point);
 			//assert(function() {// because it's not leaf node
-			//	return this.kids[kidNo] !== undefined; 
+			//	return this.kids[kidNo] !== null; 
 			//});
 			return this.kids[kidNo].valueAt(point);
 		};
@@ -120,11 +120,11 @@ ajuc.jsPointQuadtree = (function() {
 					this.value = value;
 				} else {
 					// divide
-					this.kids[0] = new Node(topLeftSubQuad(this.coordinates), [undefined, undefined, undefined, undefined], this.value);
-					this.kids[1] = new Node(topRightSubQuad(this.coordinates), [undefined, undefined, undefined, undefined], this.value);
-					this.kids[2] = new Node(bottomLeftSubQuad(this.coordinates), [undefined, undefined, undefined, undefined], this.value);
-					this.kids[3] = new Node(bottomRightSubQuad(this.coordinates), [undefined, undefined, undefined, undefined], this.value);
-					this.value = undefined; // becouse kids exist
+					this.kids[0] = new Node(topLeftSubQuad(this.coordinates), [null, null, null, null], this.value);
+					this.kids[1] = new Node(topRightSubQuad(this.coordinates), [null, null, null, null], this.value);
+					this.kids[2] = new Node(bottomLeftSubQuad(this.coordinates), [null, null, null, null], this.value);
+					this.kids[3] = new Node(bottomRightSubQuad(this.coordinates), [null, null, null, null], this.value);
+					this.value = null; // becouse kids exist
 					kidNo = whichSubQuad(this.coordinates, point);
 					this.kids[kidNo].add(point,value); // recurse
 				};
@@ -154,7 +154,7 @@ ajuc.jsPointQuadtree = (function() {
 				 values[2][1] === values[3][1]
 			) {
 				// join
-				this.kids = [undefined, undefined, undefined, undefined];
+				this.kids = [null, null, null, null];
 				this.value = values[0][1];
 				return [true, this.value];  // [same values in kids, value]
 			} else {
@@ -162,6 +162,43 @@ ajuc.jsPointQuadtree = (function() {
 			}
 		} else {
 			return [true, this.value]; // [same values in kids, value]
+		}
+	};
+
+	Node.prototype.toString = function() {
+		var kidsStr = "[";
+		
+		for (var i=0; i<4;i++) {
+			if (this.kids[i] !== null) {
+				if (i!==0) {
+					kidsStr = kidsStr + ",";
+				}
+				kidsStr = kidsStr + this.kids[i].toString();
+			} else {
+				if (i!==0) {
+					kidsStr = kidsStr + ",";
+				}
+				kidsStr = kidsStr + "null";
+			}
+		}
+		kidsStr = kidsStr + "]"; 
+		
+		return "{" + 
+					"\"value\": " + JSON.stringify(this.value) + "," +
+					"\"coordinates\": " + JSON.stringify(this.coordinates) + "," +
+					"\"kids\": " + kidsStr +
+				"}";
+	};
+		
+	Node.prototype.deserialize = function(dehydratedTree) {
+		this.coordinates = dehydratedTree["coordinates"];
+		this.value = dehydratedTree["value"];
+		this.kids = [null, null, null, null];
+		for (var i=0; i<4; i++) {
+			if (dehydratedTree["kids"][i] !== null) {
+				this.kids[i] = new ajuc.jsPointQuadtree.Node([0, 0, 0, 0], [null, null, null, null], null);
+				this.kids[i].deserialize(dehydratedTree["kids"][i]);
+			}
 		}
 	};
 	
@@ -176,7 +213,7 @@ ajuc.jsPointQuadtree = (function() {
 		};
 		
 		
-		this.root = new Node(coordinates, [undefined, undefined, undefined, undefined], undefined);
+		this.root = new Node(coordinates, [null, null, null, null], null);
 	};
 	
 	Quadtree.prototype.add = function(point, value) {
@@ -195,6 +232,25 @@ ajuc.jsPointQuadtree = (function() {
 	Quadtree.prototype.valueAt = function(point) {
 		return this.root.valueAt(point);
 	};
+	
+	Quadtree.prototype.toString = function() {
+		
+		return "{" +
+					"\"coordinates\": " + JSON.stringify(this.coordinates) + "," +
+					"\"options\": " + JSON.stringify(this.options) + "," +
+					"\"root\": " + this.root.toString() +
+				"}";
+					
+	};
+		
+	Quadtree.prototype.fromString = function(s) {
+		var tmp = JSON.parse(s);
+		this.coordinates = tmp["coordinates"];
+		this.options = tmp["options"];
+		this.root = new ajuc.jsPointQuadtree.Node(tmp["coordinates"], [null, null, null, null], null);
+		this.root.deserialize(tmp["root"]);
+	};
+		
 	
 	return {
 		Quadtree : Quadtree,
