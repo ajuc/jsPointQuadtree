@@ -28,40 +28,40 @@
 	</p>
 	
 	Creating the quadtree:
-	<code>
+	<pre><code>
 		var coordinates = [0, 0, 3, 3]; //x0, y0, x1, y1
 		var options = {'joinSameValues': true}; // true if we want to optimize the tree after each insert
 		var qt = new ajuc.jsPointQuadtree.Quadtree(coordinates, options);
-	</code>
+	</code></pre>	
 	At the start every point has null value.
 	
 	Adding points to the tree:
-	<code>
+	<pre><code>
 		qt.add([1,2], 112);
 		qt.add([2,2], "Marry had a lamb");
 		qt.add([3,0], {"a": 1}); // value can be anything, but more complicated values
-								 // (without nice ===) won't be compacted into one node
-								 // when tree is optimized, so tree can grow huge
-	</code>
+		// (without nice ===) won't be compacted into one node
+		// when tree is optimized, so tree can grow huge
+	</code></pre>	
 
 	Getting values from the tree:
-	<code>
+	<pre><code>
 		var value = qt.valueAt([0,0]); //null
 		var value = qt.valueAt([1,2]); //112
 		var value = qt.valueAt([2,2]); //"Marry had a lamb"
 		var value = qt.valueAt([3,0]); //{"a": 1}
-	</code>
+	</code></pre>	
 	
 	Serialization:
-	<code>
+	<pre><code>
 		var serialized = qt.toString();
-	</code>
+	</code></pre>	
 	
 	Deserialization:
-	<code>
+	<pre><code>
 		var qt = new ajuc.jsPointQuadtree.Quadtree([0,0,0,0], {null, null, null, null});
 		qt.fromString(serialized);
-	</code>
+	</code></pre>	
 	
 	For more examples look at <a href="tests.html">unit tests</a>.
 </body>
