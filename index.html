@@ -4,15 +4,35 @@
 
 <head>
 <meta charset="utf-8" />
-<title>Tests for pefjs (Process Engine for Java Script) library.</title>
-<link rel="stylesheet" href="https://raw.github.com/ajuc/jsPointQuadtree/master/qunit.css">
-<link rel="stylesheet" href="https://raw.github.com/ajuc/jsPointQuadtree/master/custom.css">
+<title>jsPointQuadtree project homepage</title>
+<link rel="stylesheet" href="qunit.css">
+<link rel="stylesheet" href="custom.css">
 </head>
 
 <body>
+	jsPointQuadtree is a library that allows you to create, fill, modify, serialize and deserialize
+	quadtrees of values assigned to points.
 	
+	Inteded use is to keep compressed tile map for 2d game. It will work the best, when most of the map
+	contains the same value (in the sense of === operator).
+
+	Useless for keeping objects (lke enemies, buildings, players), in it. Also useless for space indexing.
+
+	Assumptions: we have square grid, width == height == power of 2.
+
+	At each point in this grid we can have some value. This quad tree can keep such
+	data more efficiently, than regular 2d grid, if there are many regions with equal values
+	(in the sense of === operator, or (wehn I'll implement it), in the sense of anonymous
+	boolean function, supplied by the user of the library to the constructor of the quadtree).
+
+	Compression is efficient for sparse grids, or grids with big regions of the same values.
 	
-	Documentation.
-	<a href="tests.html">Fresh Unit Tests of Master branch.</a>
+	Usage:
+	
+	<div class="code">
+		
+	</div>
+	
+	<a href="tests.html">Unit tests.</a>
 </body>
 </html>
