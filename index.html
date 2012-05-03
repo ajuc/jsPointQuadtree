@@ -10,29 +10,59 @@
 </head>
 
 <body>
+	<p>
 	jsPointQuadtree is a library that allows you to create, fill, modify, serialize and deserialize
-	quadtrees of values assigned to points.
-	
-	Inteded use is to keep compressed tile map for 2d game. It will work the best, when most of the map
+	quadtrees of values assigned to points.	Inteded use is to keep compressed tile map for 2d game. It will work the best, when most of the map
 	contains the same value (in the sense of === operator).
-
-	Useless for keeping objects (lke enemies, buildings, players), in it. Also useless for space indexing.
-
+	</p>
+	
+	<p>
 	Assumptions: we have square grid, width == height == power of 2.
-
+	</p>
+	
+	<p>
 	At each point in this grid we can have some value. This quad tree can keep such
 	data more efficiently, than regular 2d grid, if there are many regions with equal values
-	(in the sense of === operator, or (wehn I'll implement it), in the sense of anonymous
+	(in the sense of === operator, or (when I'll implement it), in the sense of anonymous
 	boolean function, supplied by the user of the library to the constructor of the quadtree).
+	</p>
+	
+	Creating the quadtree:
+	<code>
+		var coordinates = [0, 0, 3, 3]; //x0, y0, x1, y1
+		var options = {'joinSameValues': true}; // true if we want to optimize the tree after each insert
+		var qt = new ajuc.jsPointQuadtree.Quadtree(coordinates, options);
+	</code>
+	At the start every point has null value.
+	
+	Adding points to the tree:
+	<code>
+		qt.add([1,2], 112);
+		qt.add([2,2], "Marry had a lamb");
+		qt.add([3,0], {"a": 1}); // value can be anything, but more complicated values
+								 // (without nice ===) won't be compacted into one node
+								 // when tree is optimized, so tree can grow huge
+	</code>
 
-	Compression is efficient for sparse grids, or grids with big regions of the same values.
+	Getting values from the tree:
+	<code>
+		var value = qt.valueAt([0,0]); //null
+		var value = qt.valueAt([1,2]); //112
+		var value = qt.valueAt([2,2]); //"Marry had a lamb"
+		var value = qt.valueAt([3,0]); //{"a": 1}
+	</code>
 	
-	Usage:
+	Serialization:
+	<code>
+		var serialized = qt.toString();
+	</code>
 	
-	<div class="code">
-		
-	</div>
+	Deserialization:
+	<code>
+		var qt = new ajuc.jsPointQuadtree.Quadtree([0,0,0,0], {null, null, null, null});
+		qt.fromString(serialized);
+	</code>
 	
-	<a href="tests.html">Unit tests.</a>
+	For more examples look at <a href="tests.html">unit tests</a>.
 </body>
 </html>
